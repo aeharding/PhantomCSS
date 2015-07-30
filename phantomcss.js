@@ -151,10 +151,10 @@ function _fileNameGetter( root, fileName ) {
 		name = root + fs.separator + fileName + "_" + _count++;
 	}
 
-	if ( _isFile( name + '.png' ) ) {
-		return name + '.diff.png';
+	if ( _isFile( name + '.jpg' ) ) {
+		return name + '.diff.jpg';
 	} else {
-		return name + '.png';
+		return name + '.jpg';
 	}
 }
 
@@ -201,9 +201,9 @@ function isComponentsConfig( obj ) {
 
 function grab( filepath, target ) {
 	if ( isClipRect( target ) ) {
-		casper.capture( filepath, target );
+		casper.capture( filepath, target, {quality: 100} );
 	} else {
-		casper.captureSelector( filepath, target );
+		casper.captureSelector( filepath, target, {quality: 100} );
 	}
 }
 
@@ -267,7 +267,7 @@ function isClipRect( value ) {
 }
 
 function isThisImageADiff( path ) {
-	return /\.diff\.png/.test( path );
+	return /\.diff\.jpg/.test( path );
 }
 
 function copyAndReplaceFile( src, dest ) {
@@ -380,7 +380,7 @@ function compareMatched( match, exclude ) {
 }
 
 function compareExplicit( list ) {
-	// An explicit list of diff images to compare ['/dialog.diff.png', '/header.diff.png']
+	// An explicit list of diff images to compare ['/dialog.diff.jpg', '/header.diff.jpg']
 	compareAll( void 0, list );
 }
 
@@ -423,26 +423,26 @@ function compareFiles( baseFile, file ) {
 
 							if ( _failures ) {
 								// flattened structure for failed diffs so that it is easier to preview
-								failFile = _failures + fs.separator + file.split( /\/|\\/g ).pop().replace( '.diff.png', '' ).replace( '.png', '' );
+								failFile = _failures + fs.separator + file.split( /\/|\\/g ).pop().replace( '.diff.jpg', '' ).replace( '.jpg', '' );
 								safeFileName = failFile;
 								increment = 0;
 
-								while ( _isFile( safeFileName + '.fail.png' ) ) {
+								while ( _isFile( safeFileName + '.fail.jpg' ) ) {
 									increment++;
 									safeFileName = failFile + '.' + increment;
 								}
 
-								failFile = safeFileName + '.fail.png';
-								casper.captureSelector( failFile, 'img' );
+								failFile = safeFileName + '.fail.jpg';
+								casper.captureSelector( failFile, 'img', {quality: 100} );
 
 								test.failFile = failFile;
 								console.log( 'Failure! Saved to ' + failFile );
 							}
 
-							if ( file.indexOf( '.diff.png' ) !== -1 ) {
-								casper.captureSelector( file.replace( '.diff.png', '.fail.png' ), 'img' );
+							if ( file.indexOf( '.diff.jpg' ) !== -1 ) {
+								casper.captureSelector( file.replace( '.diff.jpg', '.fail.jpg' ), 'img', {quality: 100} );
 							} else {
-								casper.captureSelector( file.replace( '.png', '.fail.png' ), 'img' );
+								casper.captureSelector( file.replace( '.jpg', '.fail.jpg' ), 'img', {quality: 100} );
 							}
 
 							casper.evaluate( function () {
